@@ -9,7 +9,7 @@ Minecraft Bedrock Edition用の軽量なDLLインジェクターです。
 - **最新対応:** 最新のWindows版マイクラに対応。
 
 ## 使い方
-1. [Releases](リンク) から最新の `MCBE Injector.exe` をダウンロードします。
+1. [Releases](https://github.com/Takkunlego0916/MCBE-Injector/releases) から最新の `MCBE Injector.exe` をダウンロードします。
 2. マイクラを起動します。
 3. インジェクターを起動し、DLLを選択して `Inject` を押します。
 
