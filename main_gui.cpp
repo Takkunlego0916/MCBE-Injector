@@ -4,7 +4,6 @@
 #include <string>
 #include <fstream>
 
-// ワイド文字列変換
 std::wstring s2ws(const std::string& s) {
     int slength = (int)s.length() + 1;
     int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
@@ -13,7 +12,6 @@ std::wstring s2ws(const std::string& s) {
     return r;
 }
 
-// プロセスID取得
 DWORD GetProcessIdByName(const std::wstring& name) {
     DWORD pid = 0;
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -33,7 +31,6 @@ DWORD GetProcessIdByName(const std::wstring& name) {
     return pid;
 }
 
-// 記憶用のパス保存/読み込み
 void SaveLastDLL(std::string path) {
     std::ofstream f("config.txt");
     if (f.is_open()) f << path;
@@ -46,7 +43,6 @@ std::string LoadLastDLL() {
     return path;
 }
 
-// インジェクト処理
 void Inject(std::string dllPath, std::wstring targetProcess) {
     DWORD pid = GetProcessIdByName(targetProcess);
     if (pid == 0) {
@@ -98,7 +94,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         hBtnSelect = CreateWindowA("BUTTON", "Select DLL", WS_VISIBLE | WS_CHILD, 20, 100, 110, 30, hwnd, (HMENU)1, NULL, NULL);
         hBtnInject = CreateWindowA("BUTTON", "Inject", WS_VISIBLE | WS_CHILD, 150, 100, 110, 30, hwnd, (HMENU)2, NULL, NULL);
 
-        // 起動時に最後に使ったDLLを読み込む
         selectedPath = LoadLastDLL();
         if (!selectedPath.empty()) {
             std::string fileName = selectedPath.substr(selectedPath.find_last_of("/\\") + 1);
@@ -107,21 +102,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         break;
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == 1) { // Select
+        if (LOWORD(wParam) == 1) { 
             std::string temp = OpenFileDialog();
             if (!temp.empty()) {
                 selectedPath = temp;
-                SaveLastDLL(selectedPath); // パスを保存
+                SaveLastDLL(selectedPath); 
                 SetWindowTextA(hLabel, (std::string("File: ") + selectedPath.substr(selectedPath.find_last_of("/\\") + 1)).c_str());
             }
         }
-        if (LOWORD(wParam) == 2) { // Inject
+        if (LOWORD(wParam) == 2) { 
             char procName[256];
             GetWindowTextA(hEditProcess, procName, 256);
             if (!selectedPath.empty()) Inject(selectedPath, s2ws(procName));
             else MessageBoxA(hwnd, "Please select a DLL first.", "Warning", MB_ICONWARNING);
         }
-        if (LOWORD(wParam) == 3) { // Unlock
+        if (LOWORD(wParam) == 3) { 
             isLocked = !isLocked;
             EnableWindow(hEditProcess, !isLocked);
             SetWindowTextA(hBtnUnlock, isLocked ? "Unlock" : "Lock");
@@ -148,4 +143,5 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nShow) {
     MSG msg = { 0 };
     while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
     return 0;
+
 }
