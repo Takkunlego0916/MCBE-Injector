@@ -4,6 +4,7 @@
 #include <tlhelp32.h>
 #include <commdlg.h>
 #include <string>
+#include "resource.h"
 
 const wchar_t* CONFIG_FILE = L".\\config.ini";
 
